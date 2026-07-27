@@ -1,0 +1,27 @@
+{
+  "features": [
+    "Store",
+    "Holiday_Flag",
+    "Month",
+    "WeekOfYear",
+    "Year",
+    "Temperature",
+    "Fuel_Price",
+    "CPI",
+    "Unemployment"
+  ],
+  "categorical": [
+    "Store",
+    "Holiday_Flag",
+    "Month",
+    "WeekOfYear",
+    "Year"
+  ],
+  "numerical": [
+    "Temperature",
+    "Fuel_Price",
+    "CPI",
+    "Unemployment"
+  ],
+  "target": "Weekly_Sales"
+}
