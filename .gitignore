@@ -19,6 +19,9 @@ models/*.joblib
 # Reports
 reports/
 
+# Data
+data/
+
 # Jupyter
 .ipynb_checkpoints/
 
