@@ -12,6 +12,7 @@ venv/
 
 # MLflow
 mlruns/
+mlflow.db
 
 # Models (large binary files)
 models/*.joblib
