@@ -23,6 +23,22 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Run data ingestion
+        run: |
+          python -m src.ingest
+
+      - name: Run preprocessing
+        run: |
+          python -m src.preprocessing
+
+      - name: Run feature engineering
+        run: |
+          python -m src.feature_engineering
+
+      - name: Train model
+        run: |
+          python -m src.train
+
       - name: Run tests
         run: |
           pytest -q
