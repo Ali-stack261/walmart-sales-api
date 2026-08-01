@@ -6,9 +6,9 @@ This project is an end-to-end Machine Learning and MLOps application that predic
 ## 🎯 Objectives & Features
 * **Machine Learning Pipeline:** Predict weekly sales using Regression models (Scikit-Learn, XGBoost, LightGBM).
 * **MLOps Integration:** Experiment tracking with MLflow and model versioning.
-* **API & Serving:** REST API built with FastAPI.
+* **API & Serving:** REST API built with FastAPI, including health checks, single predictions, batch predictions, and drift reporting.
 * **Engineering Best Practices:** Docker containerization, automated testing via Pytest, and CI/CD via GitHub Actions.
-* **Monitoring:** Data drift and model performance monitoring using Evidently AI.
+* **Monitoring:** Lightweight drift reporting and prediction logging for operational visibility.
 
 ## 🏗️ Project Architecture
 ```mermaid
@@ -51,6 +51,20 @@ Ensure your `config/config.yaml` is set up with correct paths and hyperparameter
 * **Tests:** `pytest`
 * **API Server:** `uvicorn api.main:app --reload`
 * **MLflow UI:** `mlflow ui`
+* **Drift Report:** `python -m src.drift_monitor`
+
+### 5. API Examples
+```bash
+curl http://127.0.0.1:8000/health
+
+curl -X POST http://127.0.0.1:8000/predict \
+  -H "Content-Type: application/json" \
+  -d '{"Store":1,"Holiday_Flag":0,"Temperature":55,"Fuel_Price":3.4,"CPI":210,"Unemployment":7.5,"Month":8,"WeekOfYear":32,"Year":2024}'
+
+curl -X POST http://127.0.0.1:8000/predict/batch \
+  -H "Content-Type: application/json" \
+  -d '[{"Store":1,"Holiday_Flag":0,"Temperature":55,"Fuel_Price":3.4,"CPI":210,"Unemployment":7.5,"Month":8,"WeekOfYear":32,"Year":2024},{"Store":2,"Holiday_Flag":1,"Temperature":60,"Fuel_Price":3.6,"CPI":215,"Unemployment":8.1,"Month":9,"WeekOfYear":35,"Year":2024}]'
+```
 
 ## 🛤️ Project Phases
 
@@ -78,9 +92,9 @@ The development of this project is structured into several core phases:
 
 ### Phase 5: API Development & MLOps
 * Built a **FastAPI** application to expose the trained model via a REST endpoint.
-* Implemented request validation using Pydantic schemas.
-* Added health and prediction routes for serving the model.
-* Added basic API tests using **Pytest**.
+* Implemented request validation using Pydantic schemas with realistic business-range constraints.
+* Added health, prediction, batch-prediction, and drift-report routes.
+* Added prediction logging and basic API tests using **Pytest**.
 
 ### Phase 6: CI/CD & Deployment
 * Added a Dockerfile to containerize the FastAPI application.
@@ -105,6 +119,7 @@ walmart-sales-api/
 ├── src/                  # Core Python modules
 │   ├── preprocessing.py  # Data cleaning logic
 │   ├── train.py          # Model training pipeline
+│   ├── drift_monitor.py  # Lightweight drift report generator
 │   └── inference.py      # Inference logic
 ├── tests/                # Pytest cases (test_api, test_features)
 ├── Dockerfile            # Docker configuration for production
