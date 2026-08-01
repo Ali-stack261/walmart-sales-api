@@ -17,9 +17,9 @@ import xgboost as xgb
 import lightgbm as lgb
 import mlflow
 
-from src.config import CONFIG, MLFLOW_TRACKING_URI, PATHS, PROJECT_ROOT, RANDOM_SEED, TARGET
+from src.config import CONFIG, PATHS, PROJECT_ROOT, RANDOM_SEED, TARGET
 from src.logger import get_logger
-from src.utils import load_json, load_parquet, save_model
+from src.utils import load_json, load_parquet, save_json, save_model
 
 logger = get_logger(__name__)
 
@@ -30,6 +30,13 @@ def evaluate_model(y_true, y_pred) -> dict:
     mae = mean_absolute_error(y_true, y_pred)
     r2 = r2_score(y_true, y_pred)
     return {"rmse": rmse, "mae": mae, "r2": r2}
+
+
+def save_training_summary(summary: dict, output_path: str | None = None) -> None:
+    """Persist the training summary to disk for reporting and tests."""
+    target_path = output_path or str(PROJECT_ROOT / "reports" / "metrics" / "training_summary.json")
+    save_json(summary, target_path)
+    logger.info("Saved training summary -> %s", target_path)
 
 
 def run_training() -> None:
@@ -88,6 +95,8 @@ def run_training() -> None:
 
     best_model = None
     best_rmse = float("inf")
+    best_mae = float("inf")
+    best_r2 = float("-inf")
     best_model_name = ""
 
     # 4. Train and track
@@ -121,6 +130,8 @@ def run_training() -> None:
             # Check if best model
             if metrics["rmse"] < best_rmse:
                 best_rmse = metrics["rmse"]
+                best_mae = metrics["mae"]
+                best_r2 = metrics["r2"]
                 best_model = model
                 best_model_name = model_name
 
@@ -128,10 +139,19 @@ def run_training() -> None:
     logger.info("\n==================================================")
     logger.info("Training complete!")
     logger.info("Best model based on Val RMSE: %s (RMSE: $%.2f)", best_model_name, best_rmse)
-    
+
+    summary = {
+        "best_model": best_model_name,
+        "best_rmse": best_rmse,
+        "best_mae": best_mae,
+        "best_r2": best_r2,
+    }
+
     best_model_path = str(PROJECT_ROOT / PATHS["model"])
     save_model(best_model, best_model_path)
     logger.info("Saved best model -> %s", best_model_path)
+
+    save_training_summary(summary)
 
 
 if __name__ == "__main__":

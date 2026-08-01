@@ -79,13 +79,14 @@ The development of this project is structured into several core phases:
 ### Phase 5: API Development & MLOps
 * Built a **FastAPI** application to expose the trained model via a REST endpoint.
 * Implemented request validation using Pydantic schemas.
-* Containerized the FastAPI application and model using **Docker**.
-* Wrote unit and integration tests using **Pytest**.
+* Added health and prediction routes for serving the model.
+* Added basic API tests using **Pytest**.
 
 ### Phase 6: CI/CD & Deployment
-* Configured **GitHub Actions** to automatically lint, test, and build the Docker image upon pull requests.
-* Deployed the containerized API to the cloud (Render / Azure App Service).
-* Implemented basic monitoring for data drift using **Evidently AI**.
+* Added a Dockerfile to containerize the FastAPI application.
+* Added a GitHub Actions workflow to run tests automatically on push and pull requests.
+* Prepared the project for cloud deployment using a standard container-based workflow.
+* Added deployment-ready structure for future monitoring and drift checks.
 
 ## 📁 Project Structure Details
 ```text
